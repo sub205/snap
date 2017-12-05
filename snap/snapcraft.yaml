@@ -1,13 +1,16 @@
-name: chromium
+name: chromium-mir-kiosk
 version: 63.0.3239.108
-summary: Chromium web browser, open-source version of Chrome
+summary: Chromium web browser in Kiosk mode on Mir
 description: |
  An open-source browser project that aims to build a safer, faster, and more
  stable way for all Internet users to experience the web.
 confinement: strict
+grade: devel
 
 apps:
   chromium:
+#    command: bin/runner-daemon
+#    daemon: simple
     command: desktop-launch chromium-browser.launcher
     desktop: usr/share/applications/chromium.desktop
     environment:
@@ -25,14 +28,20 @@ apps:
       - opengl
       - pulseaudio
       - screen-inhibit-control
-      - unity7 # required for xdg-open to work
       - upower-observe
-      - x11
+      - mir
+      - mir-libs
 
 plugs:
   browser-sandbox:
     interface: browser-support
     allow-sandbox: true
+
+  mir-libs:
+    interface: content
+    target: mir-libs
+    content: mir0
+    default-provider: mir-kiosk:mir-libs-1604
 
 parts:
   ppa-build:
@@ -43,6 +52,7 @@ parts:
       - libgl1-mesa-glx
       - libnss3
       - pulseaudio
+      - xwayland
     prepare: |
       apt install software-properties-common
       V=63.0.3239.108-0ubuntu0.16.04.1
@@ -73,3 +83,13 @@ parts:
     after: [desktop-gtk3]
     organize:
       chromium-browser.launcher: bin/
+
+  xwayland-preload:
+    plugin: cmake
+    source: xwayland-preload
+    build-packages:
+      - build-essential
+
+  glue:
+    plugin: dump
+    source: glue
