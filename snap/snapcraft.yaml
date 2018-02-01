@@ -1,5 +1,5 @@
 name: chromium-mir-kiosk
-version: 63.0.3239.132
+version: 64.0.3282.119
 summary: Chromium web browser in Kiosk mode on Mir
 description: |
  An open-source browser project that aims to build a safer, faster, and more
@@ -10,9 +10,11 @@ grade: devel
 apps:
   chromium:
     command: desktop-launch chromium-browser.launcher
+    daemon: simple
     desktop: usr/share/applications/chromium.desktop
     environment:
       DISABLE_WAYLAND: 1
+    slots: [ x11 ]
     plugs:
       - browser-sandbox
       - camera
@@ -21,6 +23,7 @@ apps:
       - gsettings
       - hardware-observe
       - home
+      - mir # due to mir-kiosk using /dev/shm in wayland implementation
       - mount-observe
       - network
       - network-bind
@@ -28,18 +31,8 @@ apps:
       - process-control
       - pulseaudio
       - screen-inhibit-control
-      - x11-plug
-
-  xwayland:
-    command: desktop-launch xwayland.launcher
-    daemon: simple
-    slots:
-      - x11
-    plugs:
-      - mir # due to Mir-kiosk insisting on /dev/shm use
-      - opengl
       - wayland
-      - x11-plug # as it includes a window manager
+      - x11-plug
 
 plugs:
   browser-sandbox:
@@ -60,7 +53,7 @@ parts:
       - pulseaudio
     prepare: |
       apt install software-properties-common
-      V=63.0.3239.132-0ubuntu0.16.04.1
+      V=64.0.3282.119-0ubuntu0.16.04.1
       add-apt-repository -y ppa:chromium-team/stable
       apt update
       apt install -y chromium-browser=$V chromium-browser-l10n=$V chromium-codecs-ffmpeg-extra=$V
@@ -88,13 +81,13 @@ parts:
     after: [desktop-gtk3]
     organize:
       chromium-browser.launcher: bin/
-      xwayland.launcher: bin/
+      i3.config: etc/
 
   xwayland:
     plugin: nil
     stage-packages:
       - xwayland
-      - matchbox-window-manager
+      - i3
 
   xwayland-preload:
     plugin: cmake
