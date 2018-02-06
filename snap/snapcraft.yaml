@@ -81,6 +81,7 @@ parts:
     after: [desktop-gtk3]
     organize:
       chromium-browser.launcher: bin/
+      chromium-policy.json: etc/chromium-browser/policies/managed/
       i3.config: etc/
 
   xwayland:
