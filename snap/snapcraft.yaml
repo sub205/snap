@@ -1,5 +1,5 @@
 name: chromium-mir-kiosk
-version: 64.0.3282.119
+version: 64.0.3282.140
 summary: Chromium web browser in Kiosk mode on Mir
 description: |
  An open-source browser project that aims to build a safer, faster, and more
@@ -53,7 +53,7 @@ parts:
       - pulseaudio
     prepare: |
       apt install software-properties-common
-      V=64.0.3282.119-0ubuntu0.16.04.1
+      V=64.0.3282.140-0ubuntu0.16.04.1
       add-apt-repository -y ppa:chromium-team/stable
       apt update
       apt install -y chromium-browser=$V chromium-browser-l10n=$V chromium-codecs-ffmpeg-extra=$V
@@ -81,6 +81,7 @@ parts:
     source: git://github.com/cook-company/kiosk.git
     build: |
       bash ../../../snap/makekioskcrx.sh kiosk $PWD
+    stage-packages: [ python3-leveldb, xdg-utils ] # to configure the kiosk extension from script    
     build-packages: [ openssl, vim-common, zip ] # vim-common for xxd
     install: |
       cp extension.id $SNAPCRAFT_PART_INSTALL
@@ -94,7 +95,10 @@ parts:
       sed "s|%%EXTENSION%%|$extension|g" \
           < ../../../snap/updates.xml.in \
           > $SNAPCRAFT_PART_INSTALL/var/www/updates.xml
-
+      mkdir -p $SNAPCRAFT_PART_INSTALL/bin
+      sed "s|%%EXTENSION%%|$extension|g" \
+          < ../../../snap/configure-kiosk.py.in \
+          > $SNAPCRAFT_PART_INSTALL/bin/configure-kiosk.py
 
   launcher:
     plugin: dump
