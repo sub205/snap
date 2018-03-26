@@ -1,5 +1,5 @@
 name: chromium-mir-kiosk
-version: 64.0.3282.167
+version: 65.0.3325.146
 summary: Chromium web browser in Kiosk mode on Mir
 description: |
  An open-source browser project that aims to build a safer, faster, and more
@@ -14,6 +14,7 @@ apps:
     desktop: usr/share/applications/chromium.desktop
     environment:
       DISABLE_WAYLAND: 1
+      CHROME_DESKTOP: chromium.desktop
     slots: [ x11 ]
     plugs:
       - browser-sandbox
@@ -26,9 +27,10 @@ apps:
       - mir # due to mir-kiosk using /dev/shm in wayland implementation
       - mount-observe
       - network
-      - network-bind
+      - network-manager
       - opengl
-      - process-control
+      - password-manager-service
+#      - process-control
       - pulseaudio
       - screen-inhibit-control
       - wayland
@@ -39,10 +41,10 @@ plugs:
     interface: browser-support
     allow-sandbox: true
 
-  wayland-socket:
-    content: wayland-socket-directory
+  wayland-socket-dir:
+    content: wayland-socket-dir
     interface: content
-    target: $SNAP_DATA/wayland
+    target: $SNAP_COMMON/wayland
     default-provider: mir-kiosk
 
   x11-plug: # because cannot have identical plug/slot name in same yaml.
@@ -67,11 +69,12 @@ parts:
       - software-properties-common
     stage-packages:
       - libgl1-mesa-glx
+      - libgnome-keyring0
       - libnss3
       - pulseaudio
     prepare: |
       apt install software-properties-common
-      V=64.0.3282.167-0ubuntu0.16.04.1
+      V=65.0.3325.146-0ubuntu0.16.04.1
       add-apt-repository -y ppa:chromium-team/stable
       apt update
       apt install -y chromium-browser=$V chromium-browser-l10n=$V chromium-codecs-ffmpeg-extra=$V
