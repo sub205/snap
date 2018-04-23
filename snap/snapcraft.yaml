@@ -12,8 +12,6 @@ apps:
     command: desktop-launch chromium-browser.launcher
     daemon: simple
     desktop: usr/share/applications/chromium.desktop
-    environment:
-      DISABLE_WAYLAND: 1
     slots: [ x11 ]
     plugs:
       - browser-sandbox
@@ -23,7 +21,6 @@ apps:
       - gsettings
       - hardware-observe
       - home
-      - mir # due to mir-kiosk using /dev/shm in wayland implementation
       - mount-observe
       - network
       - network-bind
