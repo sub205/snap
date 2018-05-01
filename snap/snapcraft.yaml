@@ -113,6 +113,9 @@ parts:
     organize:
       chromium-browser.launcher: bin/
       i3.config: etc/
+      fonts: usr/share/fonts
+      X11: usr/share/X11
+      xorg: usr/lib/xorg
 
   xwayland:
     plugin: nil
