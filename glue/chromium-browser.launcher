@@ -65,7 +65,7 @@ XDG_RUNTIME_DIR=$WAYLAND_SOCKET_DIR $SNAP/usr/bin/Xwayland -terminate :${port} &
 trap "trap - SIGTERM && kill $pid" SIGINT SIGTERM EXIT # kill on signal or quit
 
 sleep 1 #FIXME: racey
-DISPLAY=:${port} $SNAP/usr/bin/i3 -c $SNAP/etc/i3.config
+DISPLAY=:${port} $SNAP/usr/bin/i3 -c $SNAP/etc/i3.config &
 
 _is_json_array() {
     [[ $(echo $1 | jq '.[]' &> /dev/null; echo $?) == 0 ]]

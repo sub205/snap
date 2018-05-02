@@ -122,4 +122,5 @@ parts:
     stage-packages:
       - xwayland
       - libegl1-mesa
+      - libgl1-mesa-glx
       - i3
